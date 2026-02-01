@@ -1,69 +1,140 @@
-// Basic Information
-valentineName: "Mera Pyara Dudu"                    // Your Valentine's name
-pageTitle: "Will You Be My Valentine? 💝" // Browser tab title
-// Floating Background Elements
-floatingEmojis: {
-    hearts: ['❤️', '💖', '💝', '💗', '💓'],  // Heart emojis in background
-    bears: ['🧸', '🐻']                       // Bear emojis in background
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Will You Be My Valentine? 💝</title>
 
-// Questions and Buttons
-questions: {
-    first: {
-        text: "Do you like me?",                   // First question
-        yesBtn: "Yes",                             // Yes button text
-        noBtn: "No",                               // No button text
-        secretAnswer: "I don't like you, I love you! ❤️"  // Hidden message
-    },
-    second: {
-        text: "How much do you love me?",          // Second question
-        startText: "This much!",                   // Text before percentage
-        nextBtn: "Next ❤️"                         // Next button text
-    },
-    third: {
-        text: "Will you be my Valentine...?",      // Final question
-        yesBtn: "Yes!",                            // Yes button text
-        noBtn: "No"                                // No button text
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      color: #ff4757;
     }
-}
 
-// Love Meter Messages
-loveMessages: {
-    extreme: "WOOOOW You love me that much?? 🥰🚀💝",  // Shows above 5000%
-    high: "To infinity and beyond! 🚀💝",              // Shows above 1000%
-    normal: "And beyond! 🥰"                           // Shows above 100%
-}
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      max-width: 90%;
+    }
 
-// Final Celebration
-celebration: {
-    title: "Yay! I'm the luckiest person...",     // Celebration title
-    message: "Now come get your gift...",          // Celebration message
-    emojis: "🎁💖🤗💝💋❤️💕"                        // Celebration emojis
-}
+    h1 {
+      margin-bottom: 10px;
+    }
 
-// Website Colors
-colors: {
-    backgroundStart: "#ffafbd",      // Background gradient start
-    backgroundEnd: "#ffc3a0",        // Background gradient end
-    buttonBackground: "#ff6b6b",     // Button color
-    buttonHover: "#ff8787",          // Button hover color
-    textColor: "#ff4757"            // Text color
-}
+    button {
+      background: #ff6b6b;
+      border: none;
+      padding: 12px 24px;
+      margin: 10px;
+      border-radius: 25px;
+      font-size: 18px;
+      color: white;
+      cursor: pointer;
+    }
 
-// Animation Settings
-animations: {
-    floatDuration: "15s",           // How long hearts float (10-20s)
-    floatDistance: "50px",          // Sideways movement (30-70px)
-    bounceSpeed: "0.5s",            // Bounce animation speed (0.3-0.7s)
-    heartExplosionSize: 1.5         // Final heart explosion size (1.2-2.0)
-}
+    button:hover {
+      background: #ff8787;
+    }
 
-// Music Settings
-music: {
-    enabled: true, // Music feature is enabled
-    autoplay: true, // Try to autoplay (note: some browsers may block this)
-    musicUrl: "https://res.cloudinary.com/daocwzikj/video/upload/v1769919424/bubududu_lxnsgp.mp3", // Paste your music URL here
-    startText: "🎵 Play Music", // Button text to start music
-    stopText: "🔇 Stop Music", // Button text to stop music
-    volume: 0.5 // Volume level (0.0 to 1.0)
-}
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <h1 id="name">Mera Pyara Dudu 💕</h1>
+    <h2 id="question">Will you be my Valentine?</h2>
+
+    <div id="buttons">
+      <button onclick="yesClick()">Yes ❤️</button>
+      <button onclick="noClick()">No 🙈</button>
+    </div>
+
+    <p id="message" class="hidden"></p>
+
+    <button id="musicBtn" onclick="toggleMusic()">🎵 Play Music</button>
+  </div>
+
+  <audio id="music" loop></audio>
+
+  <script>
+    /* =====================
+       CONFIG (from your code)
+       ===================== */
+
+    const valentineName = "Mera Pyara Dudu";
+
+    const questions = {
+      first: {
+        text: "Do you like me?",
+        secretAnswer: "I don't like you, I love you! ❤️"
+      },
+      third: {
+        text: "Will you be my Valentine...?"
+      }
+    };
+
+    const musicConfig = {
+      url: "https://res.cloudinary.com/daocwzikj/video/upload/v1769919424/bubududu_lxnsgp.mp3",
+      volume: 0.5
+    };
+
+    /* =====================
+       LOGIC
+       ===================== */
+
+    const questionEl = document.getElementById("question");
+    const messageEl = document.getElementById("message");
+    const music = document.getElementById("music");
+    const musicBtn = document.getElementById("musicBtn");
+
+    document.getElementById("name").innerText = valentineName + " 💖";
+
+    let step = 1;
+    let musicPlaying = false;
+
+    music.src = musicConfig.url;
+    music.volume = musicConfig.volume;
+
+    function yesClick() {
+      if (step === 1) {
+        questionEl.innerText = questions.third.text;
+        messageEl.innerText = questions.first.secretAnswer;
+        messageEl.classList.remove("hidden");
+        step = 2;
+      } else {
+        questionEl.innerText = "Yay! I'm the luckiest person 💝";
+        messageEl.innerText = "Now come get your gift 🎁💖🤗💝💋❤️💕";
+        document.getElementById("buttons").classList.add("hidden");
+      }
+    }
+
+    function noClick() {
+      questionEl.innerText = "Think again 😏💘";
+    }
+
+    function toggleMusic() {
+      if (!musicPlaying) {
+        music.play();
+        musicBtn.innerText = "🔇 Stop Music";
+      } else {
+        music.pause();
+        musicBtn.innerText = "🎵 Play Music";
+      }
+      musicPlaying = !musicPlaying;
+    }
+  </script>
+
+</body>
+</html>
