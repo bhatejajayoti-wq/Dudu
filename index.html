@@ -1,140 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Will You Be My Valentine? 💝</title>
+<meta charset="UTF-8">
+<title>Will You Be My Valentine? 💝</title>
 
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      background: linear-gradient(135deg, #ffafbd, #ffc3a0);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      color: #ff4757;
-    }
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #ff4757;
+  }
 
-    .card {
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-      max-width: 90%;
-    }
+  .card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    z-index: 2;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    width: 90%;
+    max-width: 350px;
+  }
 
-    h1 {
-      margin-bottom: 10px;
-    }
+  button {
+    background: #ff6b6b;
+    border: none;
+    padding: 12px 24px;
+    margin: 10px;
+    border-radius: 25px;
+    font-size: 18px;
+    color: white;
+    cursor: pointer;
+    position: relative;
+  }
 
-    button {
-      background: #ff6b6b;
-      border: none;
-      padding: 12px 24px;
-      margin: 10px;
-      border-radius: 25px;
-      font-size: 18px;
-      color: white;
-      cursor: pointer;
-    }
+  button:hover {
+    background: #ff8787;
+  }
 
-    button:hover {
-      background: #ff8787;
-    }
+  #noBtn {
+    position: absolute;
+  }
 
-    .hidden {
-      display: none;
+  .hidden {
+    display: none;
+  }
+
+  .floating {
+    position: absolute;
+    font-size: 24px;
+    animation: float 15s linear infinite;
+    opacity: 0.7;
+  }
+
+  @keyframes float {
+    from {
+      transform: translateY(100vh) translateX(0);
     }
-  </style>
+    to {
+      transform: translateY(-10vh) translateX(50px);
+    }
+  }
+
+  .meter {
+    font-size: 30px;
+    margin: 15px 0;
+  }
+</style>
 </head>
 
 <body>
 
-  <div class="card">
-    <h1 id="name">Mera Pyara Dudu 💕</h1>
-    <h2 id="question">Will you be my Valentine?</h2>
+<div class="card">
+  <h1 id="name">Mera Pyara Dudu 🐻💖</h1>
+  <h2 id="question">Do you like me?</h2>
 
-    <div id="buttons">
-      <button onclick="yesClick()">Yes ❤️</button>
-      <button onclick="noClick()">No 🙈</button>
-    </div>
-
-    <p id="message" class="hidden"></p>
-
-    <button id="musicBtn" onclick="toggleMusic()">🎵 Play Music</button>
+  <div id="buttons">
+    <button onclick="yesClick()">Yes ❤️</button>
+    <button id="noBtn" onmouseover="moveNo()">No 🙈</button>
   </div>
 
-  <audio id="music" loop></audio>
+  <div id="meter" class="meter hidden">💖 0%</div>
+  <p id="message"></p>
 
-  <script>
-    /* =====================
-       CONFIG (from your code)
-       ===================== */
+  <button onclick="toggleMusic()" id="musicBtn">🎵 Play Music</button>
+</div>
 
-    const valentineName = "Mera Pyara Dudu";
+<audio id="music" loop>
+  <source src="https://res.cloudinary.com/daocwzikj/video/upload/v1769919424/bubududu_lxnsgp.mp3" type="audio/mpeg">
+</audio>
 
-    const questions = {
-      first: {
-        text: "Do you like me?",
-        secretAnswer: "I don't like you, I love you! ❤️"
-      },
-      third: {
-        text: "Will you be my Valentine...?"
-      }
-    };
+<script>
+  const hearts = ['❤️','💖','💝','💗','💓','🧸','🐻'];
+  const meter = document.getElementById("meter");
+  const question = document.getElementById("question");
+  const message = document.getElementById("message");
+  const music = document.getElementById("music");
+  const musicBtn = document.getElementById("musicBtn");
 
-    const musicConfig = {
-      url: "https://res.cloudinary.com/daocwzikj/video/upload/v1769919424/bubududu_lxnsgp.mp3",
-      volume: 0.5
-    };
+  let step = 1;
+  let percent = 0;
+  let playing = false;
 
-    /* =====================
-       LOGIC
-       ===================== */
+  music.volume = 0.5;
 
-    const questionEl = document.getElementById("question");
-    const messageEl = document.getElementById("message");
-    const music = document.getElementById("music");
-    const musicBtn = document.getElementById("musicBtn");
-
-    document.getElementById("name").innerText = valentineName + " 💖";
-
-    let step = 1;
-    let musicPlaying = false;
-
-    music.src = musicConfig.url;
-    music.volume = musicConfig.volume;
-
-    function yesClick() {
-      if (step === 1) {
-        questionEl.innerText = questions.third.text;
-        messageEl.innerText = questions.first.secretAnswer;
-        messageEl.classList.remove("hidden");
-        step = 2;
-      } else {
-        questionEl.innerText = "Yay! I'm the luckiest person 💝";
-        messageEl.innerText = "Now come get your gift 🎁💖🤗💝💋❤️💕";
-        document.getElementById("buttons").classList.add("hidden");
-      }
+  function yesClick() {
+    if (step === 1) {
+      question.innerText = "How much do you love me?";
+      meter.classList.remove("hidden");
+      growMeter();
+      step = 2;
+    } else {
+      question.innerText = "Will you be my Valentine? 💝";
+      message.innerText = "YAY! I'm the luckiest person 😭💖\nNow come get your gift 🎁💋";
+      document.getElementById("buttons").classList.add("hidden");
+      explodeHearts();
     }
+  }
 
-    function noClick() {
-      questionEl.innerText = "Think again 😏💘";
-    }
-
-    function toggleMusic() {
-      if (!musicPlaying) {
-        music.play();
-        musicBtn.innerText = "🔇 Stop Music";
-      } else {
-        music.pause();
-        musicBtn.innerText = "🎵 Play Music";
+  function growMeter() {
+    const interval = setInterval(() => {
+      percent += Math.floor(Math.random() * 150);
+      meter.innerText = `💖 ${percent}%`;
+      if (percent > 1200) {
+        clearInterval(interval);
+        message.innerText = "To infinity and beyond! 🚀💝";
       }
-      musicPlaying = !musicPlaying;
+    }, 150);
+  }
+
+  function moveNo() {
+    const btn = document.getElementById("noBtn");
+    btn.style.top = Math.random() * 300 + "px";
+    btn.style.left = Math.random() * 200 + "px";
+  }
+
+  function toggleMusic() {
+    if (!playing) {
+      music.play();
+      musicBtn.innerText = "🔇 Stop Music";
+    } else {
+      music.pause();
+      musicBtn.innerText = "🎵 Play Music";
     }
-  </script>
+    playing = !playing;
+  }
+
+  function createFloating() {
+    const el = document.createElement("div");
+    el.className = "floating";
+    el.innerText = hearts[Math.floor(Math.random() * hearts.length)];
+    el.style.left = Math.random() * 100 + "vw";
+    el.style.animationDuration = 10 + Math.random() * 10 + "s";
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 15000);
+  }
+
+  function explodeHearts() {
+    for (let i = 0; i < 30; i++) {
+      createFloating();
+    }
+  }
+
+  setInterval(createFloating, 800);
+</script>
 
 </body>
 </html>
